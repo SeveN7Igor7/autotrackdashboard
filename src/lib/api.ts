@@ -1,4 +1,16 @@
 // API Service para comunicação com o backend
+// Configurado para usar HTTP mesmo em produção
+
+// Declare process as global to avoid TypeScript errors
+declare const process: {
+  env: {
+    NEXT_PUBLIC_API_BASE_URL?: string;
+    NEXT_PUBLIC_ENABLE_OBC_COMMANDS?: string;
+    NODE_ENV?: string;
+  };
+};
+
+// URL base da API - sempre usa HTTP conforme configurado
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 const ENABLE_OBC_COMMANDS = process.env.NEXT_PUBLIC_ENABLE_OBC_COMMANDS === 'true';
 
