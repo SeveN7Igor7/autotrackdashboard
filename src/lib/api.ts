@@ -1,5 +1,5 @@
 // API Service para comunicação com o backend
-// Configurado para usar HTTP mesmo em produção
+// USA PROXY INTERNO PARA EVITAR MIXED CONTENT - SOLUÇÃO DEFINITIVA
 
 // Declare process as global to avoid TypeScript errors
 declare const process: {
@@ -10,9 +10,21 @@ declare const process: {
   };
 };
 
-// URL base da API - sempre usa HTTP conforme configurado
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+// Função para determinar a URL base da API
+const getApiBaseUrl = () => {
+  // Se estamos no navegador e a página é HTTPS, usa o proxy interno
+  if (typeof window !== 'undefined' && window.location.protocol === 'https:') {
+    return '/api/proxy'; // Proxy interno que redireciona para HTTP
+  }
+  
+  // Em desenvolvimento ou quando não há problema de mixed content, usa direto
+  return process.env.NEXT_PUBLIC_API_BASE_URL || 'http://192.168.111.10:3000';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 const ENABLE_OBC_COMMANDS = process.env.NEXT_PUBLIC_ENABLE_OBC_COMMANDS === 'true';
+
+console.log('[ApiService] Using API_BASE_URL:', API_BASE_URL);
 
 export interface ApiResponse<T> {
   data?: T;
