@@ -1,24 +1,17 @@
 const nextConfig = {
-  // Configurações para permitir requisições HTTP mesmo em produção HTTPS
+  // CONFIGURAÇÃO SIMPLES - PERMITE HTTP DIRETO DO CLIENTE VPN
   async headers() {
     return [
       {
-        // Aplica headers para todas as rotas
         source: '/(.*)',
         headers: [
           {
-            // REMOVE upgrade-insecure-requests para permitir HTTP
+            // CSP que permite requisições HTTP diretas
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: http: https:; font-src 'self'; connect-src 'self' http: https: ws: wss:; frame-src 'none';"
+            value: "connect-src 'self' http: https: ws: wss: data: blob:; default-src 'self' 'unsafe-eval' 'unsafe-inline' data: blob: http: https:;"
           },
           {
-            // Permite conteúdo misto
-            key: 'X-Content-Type-Options',
-            value: 'nosniff'
-          },
-          {
-            // Remove restrições de referrer
-            key: 'Referrer-Policy', 
+            key: 'Referrer-Policy',
             value: 'no-referrer-when-downgrade'
           }
         ],
@@ -26,17 +19,9 @@ const nextConfig = {
     ];
   },
   
-  // Desabilita otimizações que podem interferir
-  swcMinify: true,
-  
-  // Configurações do compilador
-  compiler: {
-    removeConsole: false,
-  },
-  
-  // Configuração para permitir requisições inseguras
+  // Configurações experimentais
   experimental: {
-    forceSwcTransforms: false,
+    allowMiddlewareResponseBody: true,
   },
 };
 

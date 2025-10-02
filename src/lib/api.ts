@@ -10,21 +10,12 @@ declare const process: {
   };
 };
 
-// Função para determinar a URL base da API
-const getApiBaseUrl = () => {
-  // Se estamos no navegador e a página é HTTPS, usa o proxy interno
-  if (typeof window !== 'undefined' && window.location.protocol === 'https:') {
-    return '/api/proxy'; // Proxy interno que redireciona para HTTP
-  }
-  
-  // Em desenvolvimento ou quando não há problema de mixed content, usa direto
-  return process.env.NEXT_PUBLIC_API_BASE_URL || 'http://192.168.111.10:3000';
-};
-
-const API_BASE_URL = getApiBaseUrl();
+// SEMPRE USA REQUISIÇÕES DIRETAS DO CLIENTE (que tem VPN)
+// Configurações especiais para permitir HTTP mesmo em HTTPS
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://192.168.111.10:3000';
 const ENABLE_OBC_COMMANDS = process.env.NEXT_PUBLIC_ENABLE_OBC_COMMANDS === 'true';
 
-console.log('[ApiService] Using API_BASE_URL:', API_BASE_URL);
+console.log('[ApiService] Using DIRECT API calls from client to:', API_BASE_URL);
 
 export interface ApiResponse<T> {
   data?: T;
